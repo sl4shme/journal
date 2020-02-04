@@ -1,0 +1,27 @@
+<html>
+  <head>
+  
+  </head>
+  <body>
+    <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&minus=true';"><</button>
+    <span onclick="window.location.href = '/'">{{ day.year }} / {{ day.month}} / {{ day.day}}</span>
+    <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&plus=true';">></button>
+    <form action="" method="post">
+      <div style="display:none">
+        <input id="year" name="year" type="text", value="{{day.year}}">
+        <input id="month" name="month" type="text", value="{{day.month}}">
+        <input id="day" name="day" type="text", value="{{day.day}}">
+      </div>
+      <p>
+        <label for="recap">Recap</label><br>
+        <textarea id="recap" name="recap">{{ day.json.get("journal") }}</textarea>
+      </p>
+
+      <p>
+        <label for="catch_up">Catch up</label><br>
+        <input id="catch_up" name="catch_up" type="checkbox" value="y">
+      </p>
+      <p><input id="submit" name="submit" type="submit" value="Save"></p>
+    </form>
+  </body>
+</html>
