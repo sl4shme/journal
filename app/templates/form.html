@@ -1,27 +1,80 @@
-<html>
-  <head>
-  
-  </head>
-  <body>
-    <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&minus=true';"><</button>
-    <span onclick="window.location.href = '/'">{{ day.year }} / {{ day.month}} / {{ day.day}}</span>
-    <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&plus=true';">></button>
-    <form action="" method="post">
-      <div style="display:none">
-        <input id="year" name="year" type="text", value="{{day.year}}">
-        <input id="month" name="month" type="text", value="{{day.month}}">
-        <input id="day" name="day" type="text", value="{{day.day}}">
-      </div>
-      <p>
-        <label for="recap">Recap</label><br>
-        <textarea id="recap" name="recap">{{ day.json.get("journal") }}</textarea>
-      </p>
+<html><body>
+<script>
 
-      <p>
+  var exercise_model = {"Bike": ["1", "2", "3"],
+                         "Run": ["2", "3", "4"]};
+
+  function ccc(e){
+    if (e.target.value in exercise_model){
+      for (field in exercise_model[e.target.value]) {
+        var input = document.createElement("input")
+        input.name = e.target.parentElement.id + "_" + field
+        input.type = "text"
+        e.target.parentElement.appendChild(input)
+      }
+    }
+  }
+
+  function add_exercise() {
+    var unique_name = Math.random().toString(36).substr(2, 9),
+    elem = document.createElement("p"),
+    input = document.createElement("input"),
+    datalist = document.createElement("datalist");
+
+    elem.id = unique_name;
+    input.name = unique_name + "_type";
+    input.setAttribute("list", unique_name + "_type_list");
+    input.addEventListener('input', ccc);
+    elem.appendChild(input);
+    datalist.id = unique_name + "_type_list" ;
+    for (type in exercise_model) {
+      var option = document.createElement('option');
+      option.value = type;
+      datalist.appendChild(option);
+    }
+    elem.appendChild(datalist);
+    document.getElementById("exercises").appendChild(elem);
+  }
+
+</script>
+
+<div id="page">
+  <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&minus=true';"><</button>
+  <span onclick="window.location.href = '/'">{{ day.year }} / {{ day.month}} / {{ day.day}}</span>
+  <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&plus=true';">></button>
+
+  <form action="" method="post">
+
+    <div style="display:none">
+      <input id="year" name="year" type="text", value="{{day.year}}">
+      <input id="month" name="month" type="text", value="{{day.month}}">
+      <input id="day" name="day" type="text", value="{{day.day}}">
+    </div>
+
+    <p>
+      <input type="date" name="bday" value="{{day.year}}-0{{day.month}}-0{{day.day}}">
+    </p>
+
+    <p>
+      <label for="recap">Recap</label><br>
+      <textarea id="recap" name="recap">{{ day.json.get("journal") }}</textarea>
+    </p>
+
+    <p>Exercises
+      <div id="exercises"></div>
+      <button type="button" onclick="add_exercise()">+</button>
+    </p>
+
+    <p>
+        <input type="radio" name="gender" value="male" checked><br>
+        <input type="radio" name="gender" value="female"><br>
+        <input type="radio" name="gender" value="other">
+
         <label for="catch_up">Catch up</label><br>
         <input id="catch_up" name="catch_up" type="checkbox" value="y">
-      </p>
-      <p><input id="submit" name="submit" type="submit" value="Save"></p>
-    </form>
-  </body>
-</html>
+    </p>
+
+    <p><input id="submit" name="submit" type="submit" value="Save"></p>
+  </form>
+</div>
+</body></html>
