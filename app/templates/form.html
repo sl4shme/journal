@@ -25,12 +25,12 @@
     input = document.createElement("input"),
     datalist = document.createElement("datalist")
 
-    elem.id = unique_name
-    input.name = unique_name + "_type"
-    input.setAttribute("list", unique_name + "_type_list")
+    elem.id = "ex_" + unique_name
+    input.name = "ex_" + unique_name + "_type"
+    input.setAttribute("list", "ex_" + unique_name + "_type_list")
     input.addEventListener('input', add_exercise_fields)
     elem.appendChild(input)
-    datalist.id = unique_name + "_type_list"
+    datalist.id = "ex_" + unique_name + "_type_list"
     for (type in exercise_model) {
       var option = document.createElement('option')
       option.value = type
