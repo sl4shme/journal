@@ -1,10 +1,14 @@
 <html><body>
 <script>
 
-  var exercise_model = {"Bike": ["1", "2", "3"],
-                         "Run": ["2", "3", "4"]};
+  var catch_up = [{"2020_01_10": 0.5},
+                  {"2020_01_20": 0.1},
+                  {"2020_02_01": 0.5}]
 
-  function ccc(e){
+  var exercise_model = {"Bike": ["1", "2", "3"],
+                         "Run": ["2", "3", "4"]}
+
+  function add_exercise_fields(e){
     if (e.target.value in exercise_model){
       for (field in exercise_model[e.target.value]) {
         var input = document.createElement("input")
@@ -19,21 +23,21 @@
     var unique_name = Math.random().toString(36).substr(2, 9),
     elem = document.createElement("p"),
     input = document.createElement("input"),
-    datalist = document.createElement("datalist");
+    datalist = document.createElement("datalist")
 
-    elem.id = unique_name;
-    input.name = unique_name + "_type";
-    input.setAttribute("list", unique_name + "_type_list");
-    input.addEventListener('input', ccc);
-    elem.appendChild(input);
-    datalist.id = unique_name + "_type_list" ;
+    elem.id = unique_name
+    input.name = unique_name + "_type"
+    input.setAttribute("list", unique_name + "_type_list")
+    input.addEventListener('input', add_exercise_fields)
+    elem.appendChild(input)
+    datalist.id = unique_name + "_type_list"
     for (type in exercise_model) {
-      var option = document.createElement('option');
-      option.value = type;
-      datalist.appendChild(option);
+      var option = document.createElement('option')
+      option.value = type
+      datalist.appendChild(option)
     }
-    elem.appendChild(datalist);
-    document.getElementById("exercises").appendChild(elem);
+    elem.appendChild(datalist)
+    document.getElementById("exercises").appendChild(elem)
   }
 
 </script>
