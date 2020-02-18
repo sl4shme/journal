@@ -1,42 +1,121 @@
 <html><body>
 <script>
 
-  var catch_up = [{"2020_01_10": 0.5},
-                  {"2020_01_20": 0.1},
-                  {"2020_02_01": 0.5}]
+  var catch_up = [{"date": "2020_01_10", "value": 0.5},
+                  {"date": "2020_01_10", "value": 1},
+                  {"date": "2020_01_10", "value": 0.5}]
 
-  var exercise_model = {"Bike": ["1", "2", "3"],
-                         "Run": ["2", "3", "4"]}
+  var exercise_model = {"Bike": ["km", "time"],
+                        "Run": ["km", "time"],
+                        "Climb": ["count", "time"]}
+
+  var day = {}
 
   function add_exercise_fields(e){
     if (e.target.value in exercise_model){
-      for (field in exercise_model[e.target.value]) {
+      document.getElementById(e.target.parentElement.id + "_span").innerHTML = ""
+      var fields = exercise_model[e.target.value]
+      for(var field of fields) {
         var input = document.createElement("input")
         input.name = e.target.parentElement.id + "_" + field
         input.type = "text"
-        e.target.parentElement.appendChild(input)
+        input.placeholder = field
+        document.getElementById(e.target.parentElement.id + "_span").appendChild(input)
       }
     }
   }
 
   function add_exercise() {
-    var unique_name = Math.random().toString(36).substr(2, 9),
-    elem = document.createElement("p"),
-    input = document.createElement("input"),
-    datalist = document.createElement("datalist")
+    var unique_name = "ex_" + Math.random().toString(36).substr(2, 9)
+    var elem = document.createElement("p")
+    elem.id = unique_name
 
-    elem.id = "ex_" + unique_name
-    input.name = "ex_" + unique_name + "_type"
-    input.setAttribute("list", "ex_" + unique_name + "_type_list")
+    var input = document.createElement("input")
+    input.name = unique_name + "_type"
+    input.setAttribute("list", unique_name + "_type_list")
+    input.placeholder = "Type"
     input.addEventListener('input', add_exercise_fields)
     elem.appendChild(input)
-    datalist.id = "ex_" + unique_name + "_type_list"
+
+    var datalist = document.createElement("datalist")
+    datalist.id = unique_name + "_type_list"
     for (type in exercise_model) {
       var option = document.createElement('option')
       option.value = type
       datalist.appendChild(option)
     }
     elem.appendChild(datalist)
+
+    var span = document.createElement("span")
+    span.id = unique_name + "_span"
+    elem.appendChild(span)
+
+    input = document.createElement("input")
+    input.name = unique_name + "_location"
+    input.type = "text"
+    input.placeholder = "Location"
+    elem.appendChild(input)
+
+    input = document.createElement("textarea")
+    input.name = unique_name + "_comment"
+    input.placeholder = "Comment"
+    elem.appendChild(input)
+
+    var radio = document.createElement("input")
+    radio.type = "radio"
+    radio.id = unique_name + "_counts_0"
+    radio.name = unique_name + "_counts"
+    radio.value = "0"
+    radio.checked = true
+    var label = document.createElement("label")
+    label.for = unique_name + "_counts_0"
+    label.innerHTML = "0"
+    elem.appendChild(radio)
+    elem.appendChild(label)
+
+    var radio = document.createElement("input")
+    radio.type = "radio"
+    radio.id = unique_name + "_counts_05"
+    radio.name = unique_name + "_counts"
+    radio.value = "0.5"
+    var label = document.createElement("label")
+    label.for = unique_name + "_counts_05"
+    label.innerHTML = "1/2"
+    elem.appendChild(radio)
+    elem.appendChild(label)
+
+    var radio = document.createElement("input")
+    radio.type = "radio"
+    radio.id = unique_name + "_counts_1"
+    radio.name = unique_name + "_counts"
+    radio.value = "1"
+    var label = document.createElement("label")
+    label.for = unique_name + "_counts_0"
+    label.innerHTML = "1"
+    elem.appendChild(radio)
+    elem.appendChild(label)
+
+    var input = document.createElement("input")
+    input.name = unique_name + "_catch_up"
+    input.setAttribute("list", unique_name + "_catch_up")
+    input.placeholder = "Catch up"
+    elem.appendChild(input)
+
+    var datalist = document.createElement("datalist")
+    datalist.id = unique_name + "_catch_up"
+    for(var catch_up_elem of catch_up) {
+      var option = document.createElement('option')
+      option.value = catch_up_elem["date"] + " (" + catch_up_elem["value"] + ")"
+      datalist.appendChild(option)
+    }
+    elem.appendChild(datalist)
+
+    var button = document.createElement("button")
+    button.type = "button"
+    button.innerHTML = "-"
+    button.addEventListener("click", function(){ document.getElementById(unique_name).remove() })
+    elem.appendChild(button)
+
     document.getElementById("exercises").appendChild(elem)
   }
 
@@ -67,15 +146,6 @@
     <p>Exercises
       <div id="exercises"></div>
       <button type="button" onclick="add_exercise()">+</button>
-    </p>
-
-    <p>
-        <input type="radio" name="gender" value="male" checked><br>
-        <input type="radio" name="gender" value="female"><br>
-        <input type="radio" name="gender" value="other">
-
-        <label for="catch_up">Catch up</label><br>
-        <input id="catch_up" name="catch_up" type="checkbox" value="y">
     </p>
 
     <p><input id="submit" name="submit" type="submit" value="Save"></p>

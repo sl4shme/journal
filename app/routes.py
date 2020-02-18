@@ -8,7 +8,11 @@ from flask import request
 @app.route('/', methods=['GET', 'POST'])
 def journal():
     if request.method == "POST":
-        return "{}".format(str(request.form))
+        f = request.form.to_dict()
+        day = Day(f['year'], f['month'], f['day'])
+
+        return "{}".format(str(day))
+
     elif {"day", "month", "year"}.issubset(request.args.keys()):
         year = int(request.args.get("year"))
         month = int(request.args.get("month"))
