@@ -10,8 +10,18 @@ def journal():
     if request.method == "POST":
         f = request.form.to_dict()
         day = Day(f['year'], f['month'], f['day'])
+        day.recap = f['recap']
+        day.exercises = {}
+        for ex_id in set([k.split("_")[1] for k in f.keys()
+                          if k.startswith("ex_")]):
+            ex = {}
+            for key, val in [("_".join(k.split("_")[2:]), f[k])
+                             for k in f.keys()
+                             if k.startswith("ex_{}".format(ex_id))]:
+                ex[key] = val
+            day.exercises[ex_id] = ex
 
-        return "{}".format(str(day))
+        return "{} {}".format(str(day), str(day.exercises))
 
     elif {"day", "month", "year"}.issubset(request.args.keys()):
         year = int(request.args.get("year"))

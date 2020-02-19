@@ -6,11 +6,11 @@ killed_int=0
 killed_usr=0
 
 function on_sigint() {
-    killed_int=1    
+    killed_int=1
 }
 
 function on_sigusr() {
-    killed_usr=1    
+    killed_usr=1
 }
 
 function watch_file() {
