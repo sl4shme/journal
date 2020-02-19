@@ -9,7 +9,7 @@ from flask import request
 def journal():
     if request.method == "POST":
         f = request.form.to_dict()
-        day = Day(f['year'], f['month'], f['day'])
+        day = Day(f['date'])
         day.recap = f['recap']
         day.exercises = {}
         for ex_id in set([k.split("_")[1] for k in f.keys()
@@ -23,21 +23,18 @@ def journal():
 
         return "{} {}".format(str(day), str(day.exercises))
 
-    elif {"day", "month", "year"}.issubset(request.args.keys()):
-        year = int(request.args.get("year"))
-        month = int(request.args.get("month"))
-        day = int(request.args.get("day"))
+    elif "date" in request.args.keys():
+        try:
+            date = datetime.strptime(request.args['date'], '%Y-%m-%d')
+        except ValueError:
+            date = datetime.now()
         if request.args.get("plus"):
-            date = datetime(year, month, day)
             date += timedelta(days=1)
-            year, month, day = date.year, date.month, date.day
         if request.args.get("minus"):
-            date = datetime(year, month, day)
             date -= timedelta(days=1)
-            year, month, day = date.year, date.month, date.day
-        day = Day(year, month, day)
+        day = Day(date)
         return render_template('form.html', day=day)
+
     else:
-        now = datetime.now()
-        day = Day(now.year, now.month, now.day)
+        day = Day(datetime.now())
         return render_template('form.html', day=day)

@@ -122,25 +122,16 @@
 </script>
 
 <div id="page">
-  <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&minus=true';"><</button>
-  <span onclick="window.location.href = '/'">{{ day.year }} / {{ day.month}} / {{ day.day}}</span>
-  <button onclick="window.location.href = '/?year={{day.year}}&month={{day.month}}&day={{day.day}}&plus=true';">></button>
-
   <form action="" method="post">
-
-    <div style="display:none">
-      <input id="year" name="year" type="text", value="{{day.year}}">
-      <input id="month" name="month" type="text", value="{{day.month}}">
-      <input id="day" name="day" type="text", value="{{day.day}}">
-    </div>
-
     <p>
-      <input type="date" name="bday" value="{{day.year}}-0{{day.month}}-0{{day.day}}">
+      <button type="button" onclick="window.location.href = '/?date={{ day.date_str }}&minus=true';"><</button>
+      <input id="date_field" type="date" name="date" value="{{ day.date_str }}" onchange="window.location.href = '/?date=' + document.getElementById('date_field').value">
+      <button type="button" onclick="window.location.href = '/?date={{ day.date_str }}&plus=true';">></button>
     </p>
 
     <p>
       <label for="recap">Recap</label><br>
-      <textarea id="recap" name="recap">{{ day.json.get("journal") }}</textarea>
+      <textarea id="recap" name="recap"></textarea>
     </p>
 
     <p>Exercises

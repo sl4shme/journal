@@ -1,33 +1,14 @@
-import json
-import os
-import sys
-
-repo_dir = "./repo/"
+from datetime import datetime
 
 
 class Day(object):
-    def __init__(self, year, month, day):
-        self.path = "{}/{}_{}_{}.json".format(repo_dir, year, month, day)
-        self.year = year
-        self.month = month
-        self.day = day
-        if os.path.exists(self.path):
-            with open(self.path, "r") as f:
-                self.json = json.loads(f.read())
+    def __init__(self, date):
+        if type(date) == str:
+            self.date = datetime.strptime(date, '%Y-%m-%d')
         else:
-            self.json = {}
+            self.date = date
+
+        self.date_str = self.__repr__()
 
     def __repr__(self):
-        return "{} / {} / {}".format(self.year, self.month, self.day)
-
-    def write(self):
-        with open(self.path, "w") as f:
-            f.write(json.dumps(self.json))
-
-
-if __name__ == "__main__":
-    d = Day(sys.argv[1], sys.argv[2], sys.argv[3])
-    print(d.json)
-    d.json["journal"] = sys.argv[4]
-    print(d.json)
-    d.write()
+        return self.date.strftime('%Y-%m-%d')
