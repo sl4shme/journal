@@ -1,26 +1,44 @@
 #!/bin/bash
-trap stop SIGINT
+trap on_sigint SIGINT
 
-on_stop=0
+killed=0
 
-function stop() {
-    on_stop=1
-    killall watch
+function on_sigint() {
+    killed=1    
 }
 
-while true ; do 
-    export FLASK_APP=journal_web.py
-    flask run >> ./flask.log 2>&1 & 
-    if [[ "$on_stop" -eq "1" ]] ; then
-        echo "Press 'c' again to kill"
+function watch_file() {
+    mdate=`stat -c %y $1`
+    while true; do
+        sleep 0.1
+        last_mdate=`stat -c %y $1`
+        if [[ "$mdate" != "$last_mdate" ]] ; then
+            mdate=$last_mdate
+            kill -s SIGINT $2
+        fi
+    done
+}
+
+watch_file ./app/templates/form.html $$ &
+watch_file ./app/routes.py $$ &
+watch_file ./journal.py $$ &
+
+flask run >> ./flask.log 2>&1 &
+flask_pid=$!
+
+while true ; do
+    if [[ "$killed" == "1" ]] ; then
+        kill $flask_pid
+        flask run >> ./flask.log 2>&1 &
+        flask_pid=$!
+        echo "Reloaded. Press 'c' again to kill"
         read -rsn 1 -t 2 answer
         if [[ "$answer" == "c" ]] ; then
-            killall flask
-            tail ./flask.log
+            kill $flask_pid
             exit 0
         fi
-        on_stop=0
+        killed=0
+    else
+        sleep 0.1
     fi
-    watch -t -g "ls -l ./app/templates/form.html"
-    killall flask
 done

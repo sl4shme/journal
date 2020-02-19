@@ -1,8 +1,6 @@
 import json
 import os
 import sys
-# import datetime
-
 
 repo_dir = "./repo/"
 
