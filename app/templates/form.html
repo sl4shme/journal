@@ -68,7 +68,7 @@
     radio.value = "0"
     radio.checked = true
     var label = document.createElement("label")
-    label.for = unique_name + "_counts_0"
+    label.setAttribute("for", unique_name + "_counts_0")
     label.innerHTML = "0"
     elem.appendChild(radio)
     elem.appendChild(label)
@@ -79,7 +79,7 @@
     radio.name = unique_name + "_counts"
     radio.value = "0.5"
     var label = document.createElement("label")
-    label.for = unique_name + "_counts_05"
+    label.setAttribute("for", unique_name + "_counts_05")
     label.innerHTML = "1/2"
     elem.appendChild(radio)
     elem.appendChild(label)
@@ -90,7 +90,7 @@
     radio.name = unique_name + "_counts"
     radio.value = "1"
     var label = document.createElement("label")
-    label.for = unique_name + "_counts_0"
+    label.setAttribute("for", unique_name + "_counts_1")
     label.innerHTML = "1"
     elem.appendChild(radio)
     elem.appendChild(label)
