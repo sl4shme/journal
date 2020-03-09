@@ -1,6 +1,5 @@
 <html><body>
 <script>
-
   var catch_up = [{"date": "2020_01_10", "value": 0.5},
                   {"date": "2020_01_10", "value": 1},
                   {"date": "2020_01_10", "value": 0.5}]
@@ -9,7 +8,8 @@
                         "Run": ["km", "time"],
                         "Climb": ["count", "time"]}
 
-  var day = {{ day.to_json() }}
+  var exercises = {{ day.exercises | tojson }}
+  var attributes = {{ day.attributes | tojson }}
 
   function add_exercise_fields(e){
     if (e.target.value in exercise_model){
@@ -26,7 +26,7 @@
   }
 
   function add_exercise() {
-    var unique_name = "ex_" + Math.random().toString(36).substr(2, 9)
+    var unique_name = "ex_" + Math.random().toString(36).substr(2, 16)
     var elem = document.createElement("p")
     elem.id = unique_name
 
@@ -119,6 +119,19 @@
     document.getElementById("exercises").appendChild(elem)
   }
 
+  document.addEventListener('DOMContentLoaded', function() {
+    if (attributes["recap"]){
+      document.getElementById("recap").innerHTML = attributes["recap"]
+    }
+    if (attributes["weight"]){
+      document.getElementById("weight").value = attributes["weight"]
+    }
+    if (attributes["happiness"]){
+      document.getElementById("happiness_" + attributes["happiness"]).checked = true
+    }
+
+  })
+
 </script>
 
 {{ day.to_json() }}
@@ -132,27 +145,27 @@
     </p>
 
     <p>
-      <label for="recap">Recap</label><br>
+      <label for="recap">Recap: </label><br>
       <textarea id="recap" name="recap"></textarea>
     </p>
 
     <p>
-      <label for="weight">Weight</label>
+      <label for="weight">Weight: </label>
       <input type="text" id="weight" name="weight"></input>
-      Happiness
-      <label for="happiness_1">1</label>
+      Happiness: 
       <input type="radio" id="happiness_1" name="happiness" value="1"></input>
-      <label for="happiness_2">2</label>
+      <label for="happiness_1">1</label>
       <input type="radio" id="happiness_2" name="happiness" value="2"></input>
-      <label for="happiness_3">3</label>
+      <label for="happiness_2">2</label>
       <input type="radio" id="happiness_3" name="happiness" value="3"></input>
-      <label for="happiness_4">4</label>
+      <label for="happiness_3">3</label>
       <input type="radio" id="happiness_4" name="happiness" value="4"></input>
-      <label for="happiness_5">5</label>
+      <label for="happiness_4">4</label>
       <input type="radio" id="happiness_5" name="happiness" value="5"></input>
+      <label for="happiness_5">5</label>
     </p>
 
-    <p>Exercises
+    <p>Exercises:
       <div id="exercises"></div>
       <button type="button" onclick="add_exercise()">+</button>
     </p>
