@@ -9,9 +9,8 @@ from flask import request
 def journal():
     if request.method == "POST":
         f = request.form.to_dict()
-        day = Day(f['date'])
-        day.recap = f['recap']
-        day.exercises = {}
+        day = Day(f.pop('date'))
+        f.pop('submit')
         for ex_id in set([k.split("_")[1] for k in f.keys()
                           if k.startswith("ex_")]):
             ex = {}
@@ -19,9 +18,15 @@ def journal():
                              for k in f.keys()
                              if k.startswith("ex_{}".format(ex_id))]:
                 ex[key] = val
+                f.pop("ex_{}_{}".format(ex_id, key))
             day.exercises[ex_id] = ex
+        for key in list(f.keys()):
+            day.attributes[key] = f.pop(key)
 
-        return "{} {}".format(str(day), str(day.exercises))
+        day.save()
+
+        return "{} / {} / {}".format(str(day), str(day.exercises),
+                                     str(day.attributes))
 
     elif "date" in request.args.keys():
         try:

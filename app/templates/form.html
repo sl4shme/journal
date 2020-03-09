@@ -9,7 +9,7 @@
                         "Run": ["km", "time"],
                         "Climb": ["count", "time"]}
 
-  var day = {}
+  var day = {{ day.to_json() }}
 
   function add_exercise_fields(e){
     if (e.target.value in exercise_model){
@@ -120,6 +120,8 @@
   }
 
 </script>
+
+{{ day.to_json() }}
 
 <div id="page">
   <form action="" method="post">
