@@ -9,7 +9,7 @@ from flask import request
 def journal():
     if request.method == "POST":
         f = request.form.to_dict()
-        day = Day(f.pop('date'))
+        day = Day(f.pop('date'), clean=True)
         f.pop('submit')
         for ex_id in set([k.split("_")[1] for k in f.keys()
                           if k.startswith("ex_")]):
@@ -22,11 +22,14 @@ def journal():
             day.exercises[ex_id] = ex
         for key in list(f.keys()):
             day.attributes[key] = f.pop(key)
-
+        day.exercise_order = sorted(list(day.exercises.keys()),
+                                    key=lambda k: day.exercises[k]["order"])
         day.save()
 
-        return "{} / {} / {}".format(str(day), str(day.exercises),
-                                     str(day.attributes))
+        return "{} / {} / {} / {}".format(str(day),
+                                          str(day.attributes),
+                                          str(day.exercises),
+                                          str(day.exercise_order))
 
     elif "date" in request.args.keys():
         try:

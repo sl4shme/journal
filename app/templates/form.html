@@ -8,8 +8,9 @@
                         "Run": ["km", "time"],
                         "Climb": ["count", "time"]}
 
-  var exercises = {{ day.exercises | tojson }}
   var attributes = {{ day.attributes | tojson }}
+  var exercises = {{ day.exercises | tojson }}
+  var exercise_order = {{ day.exercise_order | tojson }}
 
   function add_exercise_fields(e){
     if (e.target.value in exercise_model){
@@ -110,6 +111,18 @@
     }
     elem.appendChild(datalist)
 
+    input = document.createElement("input")
+    input.name = unique_name + "_order"
+    input.id = unique_name + "_order"
+    input.type = "text"
+    input.setAttribute("hidden", true)
+    if (document.getElementById("exercises").childElementCount !== 0){
+      input.value = parseInt(document.getElementById(document.getElementById("exercises").lastChild.id + "_order").value) + 1
+    } else { 
+      input.value = 0 
+    }
+    elem.appendChild(input)
+
     var button = document.createElement("button")
     button.type = "button"
     button.innerHTML = "-"
@@ -130,12 +143,13 @@
       document.getElementById("happiness_" + attributes["happiness"]).checked = true
     }
 
+    for(var ex_id of exercise_order) {
+      add_exercise()
+      document.getElementsByName(document.getElementById("exercises").lastChild.id + "_location")[0].value = ex_id
+    }
   })
 
 </script>
-
-{{ day.to_json() }}
-
 <div id="page">
   <form action="" method="post">
     <p>
