@@ -26,8 +26,12 @@
     }
   }
 
-  function add_exercise() {
-    var unique_name = "ex_" + Math.random().toString(36).substr(2, 16)
+  function add_exercise(name = null) {
+    if (name == null){
+        var unique_name = "ex_" + Math.random().toString(36).substr(2, 16)
+    } else {
+        var unique_name = "ex_" + name
+    }
     var elem = document.createElement("p")
     elem.id = unique_name
 
@@ -139,13 +143,15 @@
     if (attributes["weight"]){
       document.getElementById("weight").value = attributes["weight"]
     }
+    if (attributes["bodyfat"]){
+      document.getElementById("bodyfat").value = attributes["bodyfat"]
+    }
     if (attributes["happiness"]){
       document.getElementById("happiness_" + attributes["happiness"]).checked = true
     }
 
     for(var ex_id of exercise_order) {
-      add_exercise()
-      document.getElementsByName(document.getElementById("exercises").lastChild.id + "_location")[0].value = ex_id
+      add_exercise(ex_id)
     }
   })
 
@@ -166,6 +172,8 @@
     <p>
       <label for="weight">Weight: </label>
       <input type="text" id="weight" name="weight"></input>
+      <label for="bodyfat">BF: </label>
+      <input type="text" id="bodyfat" name="bodyfat"></input>
       Happiness: 
       <input type="radio" id="happiness_1" name="happiness" value="1"></input>
       <label for="happiness_1">1</label>
