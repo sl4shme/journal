@@ -1,5 +1,4 @@
-add an order in exercise
-
-catch enter key to prevent non wanted form submit
+Catch enter key to prevent non wanted form submit
 Use JS to make date picker nicer
-add a <hr> line between exercises
+Add a <hr> line between exercises
+Add re-order on exercise deletetion

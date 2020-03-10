@@ -26,12 +26,14 @@
     }
   }
 
-  function add_exercise(name = null) {
-    if (name == null){
-        var unique_name = "ex_" + Math.random().toString(36).substr(2, 16)
+  function add_exercise(unique_name = null) {
+    if (unique_name == null){
+      var new_ex = true
+      var unique_name = "ex_" + Math.random().toString(36).substr(2, 16)
     } else {
-        var unique_name = "ex_" + name
+      var new_ex = false
     }
+
     var elem = document.createElement("p")
     elem.id = unique_name
 
@@ -41,6 +43,10 @@
     input.placeholder = "Type"
     input.addEventListener('input', add_exercise_fields)
     elem.appendChild(input)
+    if ( ! new_ex && exercises[unique_name]["type"]){
+      input.value = exercises[unique_name]["type"]
+    }
+
 
     var datalist = document.createElement("datalist")
     datalist.id = unique_name + "_type_list"
@@ -122,8 +128,8 @@
     input.setAttribute("hidden", true)
     if (document.getElementById("exercises").childElementCount !== 0){
       input.value = parseInt(document.getElementById(document.getElementById("exercises").lastChild.id + "_order").value) + 1
-    } else { 
-      input.value = 0 
+    } else {
+      input.value = 0
     }
     elem.appendChild(input)
 
@@ -174,7 +180,7 @@
       <input type="text" id="weight" name="weight"></input>
       <label for="bodyfat">BF: </label>
       <input type="text" id="bodyfat" name="bodyfat"></input>
-      Happiness: 
+      Happiness:
       <input type="radio" id="happiness_1" name="happiness" value="1"></input>
       <label for="happiness_1">1</label>
       <input type="radio" id="happiness_2" name="happiness" value="2"></input>
