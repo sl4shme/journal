@@ -26,10 +26,12 @@ def journal():
                                     key=lambda k: day.exercises[k]["order"])
         day.save()
 
-        return "{} / {} / {} / {}".format(str(day),
+        msg = " {} / {} / {} / {}".format(str(day),
                                           str(day.attributes),
                                           str(day.exercises),
                                           str(day.exercise_order))
+
+        return render_template('form.html', day=day, msg=msg)
 
     elif "date" in request.args.keys():
         try:
