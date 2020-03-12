@@ -12,6 +12,16 @@
   var exercises = {{ day.exercises | tojson }}
   var exercise_order = {{ day.exercise_order | tojson }}
 
+  function order_exercises(){
+    if (document.getElementById("exercises").childElementCount !== 0){
+      var index = 0
+      for (child of document.getElementById("exercises").children){
+        document.getElementById(child.id + "_order").value = index
+        index++
+      }
+    }
+  }
+
   function add_exercise_fields(ex_id){
     if (typeof ex_id == "object"){
       ex_id = ex_id.target.parentElement.id
@@ -142,20 +152,17 @@
     input.id = ex_id + "_order"
     input.type = "text"
     input.setAttribute("hidden", true)
-    if (document.getElementById("exercises").childElementCount !== 0){
-      input.value = parseInt(document.getElementById(document.getElementById("exercises").lastChild.id + "_order").value) + 1
-    } else {
-      input.value = 0
-    }
     elem.appendChild(input)
 
     var button = document.createElement("button")
     button.type = "button"
     button.innerHTML = "-"
-    button.addEventListener("click", function(){ document.getElementById(ex_id).remove() })
+    button.addEventListener("click", function(){ document.getElementById(ex_id).remove(); order_exercises() })
     elem.appendChild(button)
 
     document.getElementById("exercises").appendChild(elem)
+
+    order_exercises()
   }
 
   document.addEventListener('DOMContentLoaded', function() {
