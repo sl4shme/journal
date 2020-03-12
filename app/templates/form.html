@@ -12,44 +12,45 @@
   var exercises = {{ day.exercises | tojson }}
   var exercise_order = {{ day.exercise_order | tojson }}
 
-  function add_exercise_fields(e){
-    if (e.target.value in exercise_model){
-      document.getElementById(e.target.parentElement.id + "_span").innerHTML = ""
-      var fields = exercise_model[e.target.value]
-      for(var field of fields) {
+  function add_exercise_fields(ex_id){
+    if (typeof ex_id == "object"){
+      ex_id = ex_id.target.parentElement.id
+    }
+    if (document.getElementById(ex_id + "_type").value in exercise_model){
+      document.getElementById(ex_id + "_span").innerHTML = ""
+      for(var field of exercise_model[document.getElementById(ex_id + "_type").value]) {
         var input = document.createElement("input")
-        input.name = e.target.parentElement.id + "_" + field
+        input.name = ex_id + "_" + field
         input.type = "text"
         input.placeholder = field
-        document.getElementById(e.target.parentElement.id + "_span").appendChild(input)
+        if ( exercises[ex_id] && exercises[ex_id][field]){
+          input.value = exercises[ex_id][field]
+        }
+        document.getElementById(ex_id + "_span").appendChild(input)
       }
     }
   }
 
-  function add_exercise(unique_name = null) {
-    if (unique_name == null){
-      var new_ex = true
-      var unique_name = "ex_" + Math.random().toString(36).substr(2, 16)
-    } else {
-      var new_ex = false
+  function add_exercise(ex_id = null) {
+    if (ex_id == null){
+      var ex_id = "ex_" + Math.random().toString(36).substr(2, 16)
     }
 
     var elem = document.createElement("p")
-    elem.id = unique_name
+    elem.id = ex_id
 
     var input = document.createElement("input")
-    input.name = unique_name + "_type"
-    input.setAttribute("list", unique_name + "_type_list")
+    input.name = input.id = ex_id + "_type"
+    input.setAttribute("list", ex_id + "_type_list")
     input.placeholder = "Type"
     input.addEventListener('input', add_exercise_fields)
     elem.appendChild(input)
-    if ( ! new_ex && exercises[unique_name]["type"]){
-      input.value = exercises[unique_name]["type"]
+    if ( exercises[ex_id] && exercises[ex_id]["type"]){
+      input.value = exercises[ex_id]["type"]
     }
 
-
     var datalist = document.createElement("datalist")
-    datalist.id = unique_name + "_type_list"
+    datalist.id = ex_id + "_type_list"
     for (type in exercise_model) {
       var option = document.createElement('option')
       option.value = type
@@ -58,62 +59,77 @@
     elem.appendChild(datalist)
 
     var span = document.createElement("span")
-    span.id = unique_name + "_span"
+    span.id = ex_id + "_span"
     elem.appendChild(span)
 
     input = document.createElement("input")
-    input.name = unique_name + "_location"
+    input.name = input.id = ex_id + "_location"
     input.type = "text"
     input.placeholder = "Location"
     elem.appendChild(input)
+    if ( exercises[ex_id] && exercises[ex_id]["location"]){
+      input.value = exercises[ex_id]["location"]
+    }
 
     input = document.createElement("textarea")
-    input.name = unique_name + "_comment"
+    input.name = input.id = ex_id + "_comment"
     input.placeholder = "Comment"
     elem.appendChild(input)
+    if ( exercises[ex_id] && exercises[ex_id]["comment"]){
+      input.value = exercises[ex_id]["comment"]
+    }
 
     var radio = document.createElement("input")
     radio.type = "radio"
-    radio.id = unique_name + "_counts_0"
-    radio.name = unique_name + "_counts"
+    radio.id = ex_id + "_counts_0"
+    radio.name = ex_id + "_counts"
     radio.value = "0"
     radio.checked = true
     var label = document.createElement("label")
-    label.setAttribute("for", unique_name + "_counts_0")
+    label.setAttribute("for", ex_id + "_counts_0")
     label.innerHTML = "0"
     elem.appendChild(radio)
     elem.appendChild(label)
 
     var radio = document.createElement("input")
     radio.type = "radio"
-    radio.id = unique_name + "_counts_05"
-    radio.name = unique_name + "_counts"
+    radio.id = ex_id + "_counts_05"
+    radio.name = ex_id + "_counts"
     radio.value = "0.5"
+    if ( exercises[ex_id] && exercises[ex_id]["counts"] == "0.5"){
+      radio.checked = true
+    }
     var label = document.createElement("label")
-    label.setAttribute("for", unique_name + "_counts_05")
+    label.setAttribute("for", ex_id + "_counts_05")
     label.innerHTML = "1/2"
     elem.appendChild(radio)
     elem.appendChild(label)
 
     var radio = document.createElement("input")
     radio.type = "radio"
-    radio.id = unique_name + "_counts_1"
-    radio.name = unique_name + "_counts"
+    radio.id = ex_id + "_counts_1"
+    radio.name = ex_id + "_counts"
     radio.value = "1"
+    if ( exercises[ex_id] && exercises[ex_id]["counts"] == "1"){
+      radio.checked = true
+    }
     var label = document.createElement("label")
-    label.setAttribute("for", unique_name + "_counts_1")
+    label.setAttribute("for", ex_id + "_counts_1")
     label.innerHTML = "1"
     elem.appendChild(radio)
     elem.appendChild(label)
-
+    
     var input = document.createElement("input")
-    input.name = unique_name + "_catch_up"
-    input.setAttribute("list", unique_name + "_catch_up")
+    input.name = ex_id + "_catch_up"
+    input.setAttribute("list", ex_id + "_catch_up")
     input.placeholder = "Catch up"
     elem.appendChild(input)
+    if ( exercises[ex_id] && exercises[ex_id]["catch_up"]){
+      input.value = exercises[ex_id]["catch_up"]
+    }
 
     var datalist = document.createElement("datalist")
-    datalist.id = unique_name + "_catch_up"
+    datalist.id = ex_id + "_catch_up"
     for(var catch_up_elem of catch_up) {
       var option = document.createElement('option')
       option.value = catch_up_elem["date"] + " (" + catch_up_elem["value"] + ")"
@@ -122,8 +138,8 @@
     elem.appendChild(datalist)
 
     input = document.createElement("input")
-    input.name = unique_name + "_order"
-    input.id = unique_name + "_order"
+    input.name = ex_id + "_order"
+    input.id = ex_id + "_order"
     input.type = "text"
     input.setAttribute("hidden", true)
     if (document.getElementById("exercises").childElementCount !== 0){
@@ -136,7 +152,7 @@
     var button = document.createElement("button")
     button.type = "button"
     button.innerHTML = "-"
-    button.addEventListener("click", function(){ document.getElementById(unique_name).remove() })
+    button.addEventListener("click", function(){ document.getElementById(ex_id).remove() })
     elem.appendChild(button)
 
     document.getElementById("exercises").appendChild(elem)
@@ -158,6 +174,7 @@
 
     for(var ex_id of exercise_order) {
       add_exercise(ex_id)
+      add_exercise_fields(ex_id)
     }
   })
 
