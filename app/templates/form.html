@@ -1,189 +1,210 @@
 <html><body>
 <script>
-  var catch_up = [{"date": "2020_01_10", "value": 0.5},
-                  {"date": "2020_01_10", "value": 1},
-                  {"date": "2020_01_10", "value": 0.5}]
+var catch_up = [{"date": "2020_01_10", "value": 1},
+                {"date": "2020_02_10", "value": 1},
+                {"date": "2020_03_10", "value": 0.5}]
 
-  var exercise_model = {"Bike": ["km", "time"],
-                        "Run": ["km", "time"],
-                        "Climb": ["count", "time"]}
+//var catch_up = []
 
-  var attributes = {{ day.attributes | tojson }}
-  var exercises = {{ day.exercises | tojson }}
-  var exercise_order = {{ day.exercise_order | tojson }}
+var exercise_model = {"Bike": ["km", "time"],
+                      "Run": ["km", "time"],
+                      "Climb": ["count", "time"]}
 
-  function order_exercises(){
-    if (document.getElementById("exercises").childElementCount !== 0){
-      var index = 0
-      for (child of document.getElementById("exercises").children){
-        document.getElementById(child.id + "_order").value = index
-        index++
-      }
+var attributes = {{ day.attributes | tojson }}
+var exercises = {{ day.exercises | tojson }}
+var exercise_order = {{ day.exercise_order | tojson }}
+//var catch_up = {{ day.potential_catch_up | tojson }}
+
+function order_exercises(){
+  if (document.getElementById("exercises").childElementCount !== 0){
+    var index = 0
+    for (child of document.getElementById("exercises").children){
+      document.getElementById(child.id + "_order").value = index
+      index++
     }
   }
+}
 
-  function add_exercise_fields(ex_id){
-    if (typeof ex_id == "object"){
-      ex_id = ex_id.target.parentElement.id
-    }
-    if (document.getElementById(ex_id + "_type").value in exercise_model){
-      document.getElementById(ex_id + "_span").innerHTML = ""
-      for(var field of exercise_model[document.getElementById(ex_id + "_type").value]) {
-        var input = document.createElement("input")
-        input.name = ex_id + "_" + field
-        input.type = "text"
-        input.placeholder = field
-        if ( exercises[ex_id] && exercises[ex_id][field]){
-          input.value = exercises[ex_id][field]
-        }
-        document.getElementById(ex_id + "_span").appendChild(input)
+function show_catch_up(e){
+  var  ex_id = e.target.parentElement.id
+  if(e.target.value == "1" && catch_up.length > 0){
+    document.getElementById(ex_id + "_catch_up").hidden = false
+  } else {
+    document.getElementById(ex_id + "_catch_up").hidden = true
+    document.getElementById(ex_id + "_catch_up_none").selected = true
+  }
+}
+
+function add_exercise_fields(ex_id){
+  if (typeof ex_id == "object"){
+    ex_id = ex_id.target.parentElement.id
+  }
+  if (document.getElementById(ex_id + "_type").value in exercise_model){
+    document.getElementById(ex_id + "_span").innerHTML = ""
+    for(var field of exercise_model[document.getElementById(ex_id + "_type").value]) {
+      var input = document.createElement("input")
+      input.name = ex_id + "_" + field
+      input.type = "text"
+      input.placeholder = field
+      if ( exercises[ex_id] && exercises[ex_id][field]){
+        input.value = exercises[ex_id][field]
       }
+      document.getElementById(ex_id + "_span").appendChild(input)
     }
   }
+}
 
-  function add_exercise(ex_id = null) {
-    if (ex_id == null){
-      var ex_id = "ex_" + Math.random().toString(36).substr(2, 16)
-    }
+function add_exercise(ex_id = null) {
+  if (ex_id == null){
+    var ex_id = "ex_" + Math.random().toString(36).substr(2, 16)
+  }
 
-    var elem = document.createElement("p")
-    elem.id = ex_id
+  var elem = document.createElement("p")
+  elem.id = ex_id
 
-    var input = document.createElement("input")
-    input.name = input.id = ex_id + "_type"
-    input.setAttribute("list", ex_id + "_type_list")
-    input.placeholder = "Type"
-    input.addEventListener('input', add_exercise_fields)
-    elem.appendChild(input)
-    if ( exercises[ex_id] && exercises[ex_id]["type"]){
-      input.value = exercises[ex_id]["type"]
-    }
+  var input = document.createElement("input")
+  input.name = input.id = ex_id + "_type"
+  input.setAttribute("list", ex_id + "_type_list")
+  input.placeholder = "Type"
+  input.addEventListener('input', add_exercise_fields)
+  elem.appendChild(input)
+  if ( exercises[ex_id] && exercises[ex_id]["type"]){
+    input.value = exercises[ex_id]["type"]
+  }
 
-    var datalist = document.createElement("datalist")
-    datalist.id = ex_id + "_type_list"
-    for (type in exercise_model) {
-      var option = document.createElement('option')
-      option.value = type
-      datalist.appendChild(option)
-    }
-    elem.appendChild(datalist)
+  var datalist = document.createElement("datalist")
+  datalist.id = ex_id + "_type_list"
+  for (type in exercise_model) {
+    var option = document.createElement('option')
+    option.value = type
+    datalist.appendChild(option)
+  }
+  elem.appendChild(datalist)
 
-    var span = document.createElement("span")
-    span.id = ex_id + "_span"
-    elem.appendChild(span)
+  var span = document.createElement("span")
+  span.id = ex_id + "_span"
+  elem.appendChild(span)
 
-    input = document.createElement("input")
-    input.name = input.id = ex_id + "_location"
-    input.type = "text"
-    input.placeholder = "Location"
-    elem.appendChild(input)
-    if ( exercises[ex_id] && exercises[ex_id]["location"]){
-      input.value = exercises[ex_id]["location"]
-    }
+  input = document.createElement("input")
+  input.name = input.id = ex_id + "_location"
+  input.type = "text"
+  input.placeholder = "Location"
+  elem.appendChild(input)
+  if ( exercises[ex_id] && exercises[ex_id]["location"]){
+    input.value = exercises[ex_id]["location"]
+  }
 
-    input = document.createElement("textarea")
-    input.name = input.id = ex_id + "_comment"
-    input.placeholder = "Comment"
-    elem.appendChild(input)
-    if ( exercises[ex_id] && exercises[ex_id]["comment"]){
-      input.value = exercises[ex_id]["comment"]
-    }
+  input = document.createElement("textarea")
+  input.name = input.id = ex_id + "_comment"
+  input.placeholder = "Comment"
+  elem.appendChild(input)
+  if ( exercises[ex_id] && exercises[ex_id]["comment"]){
+    input.value = exercises[ex_id]["comment"]
+  }
 
-    var radio = document.createElement("input")
-    radio.type = "radio"
-    radio.id = ex_id + "_counts_0"
-    radio.name = ex_id + "_counts"
-    radio.value = "0"
+  var radio = document.createElement("input")
+  radio.type = "radio"
+  radio.id = ex_id + "_counts_0"
+  radio.name = ex_id + "_counts"
+  radio.value = "0"
+  radio.checked = true
+  radio.addEventListener("click", show_catch_up)
+  var label = document.createElement("label")
+  label.setAttribute("for", ex_id + "_counts_0")
+  label.innerHTML = "0"
+  elem.appendChild(radio)
+  elem.appendChild(label)
+
+  var radio = document.createElement("input")
+  radio.type = "radio"
+  radio.id = ex_id + "_counts_05"
+  radio.name = ex_id + "_counts"
+  radio.value = "0.5"
+  radio.addEventListener("click", show_catch_up)
+  if ( exercises[ex_id] && exercises[ex_id]["counts"] == "0.5"){
     radio.checked = true
-    var label = document.createElement("label")
-    label.setAttribute("for", ex_id + "_counts_0")
-    label.innerHTML = "0"
-    elem.appendChild(radio)
-    elem.appendChild(label)
+  }
+  var label = document.createElement("label")
+  label.setAttribute("for", ex_id + "_counts_05")
+  label.innerHTML = "1/2"
+  elem.appendChild(radio)
+  elem.appendChild(label)
 
-    var radio = document.createElement("input")
-    radio.type = "radio"
-    radio.id = ex_id + "_counts_05"
-    radio.name = ex_id + "_counts"
-    radio.value = "0.5"
-    if ( exercises[ex_id] && exercises[ex_id]["counts"] == "0.5"){
-      radio.checked = true
+  var radio = document.createElement("input")
+  radio.type = "radio"
+  radio.id = ex_id + "_counts_1"
+  radio.name = ex_id + "_counts"
+  radio.value = "1"
+  radio.addEventListener("click", show_catch_up)
+  if ( exercises[ex_id] && exercises[ex_id]["counts"] == "1"){
+    radio.checked = true
+  }
+  var label = document.createElement("label")
+  label.setAttribute("for", ex_id + "_counts_1")
+  label.innerHTML = "1"
+  elem.appendChild(radio)
+  elem.appendChild(label)
+
+  var select = document.createElement("select")
+  select.name = select.id = ex_id + "_catch_up"
+  select.hidden = true
+  var option = document.createElement('option')
+  option.value = ""
+  option.id = ex_id + "_catch_up_none"
+  option.innerHTML = "None"
+  option.selected = true
+  select.appendChild(option)
+  for(var catch_up_elem of catch_up) {
+    var option = document.createElement('option')
+    option.value = catch_up_elem["date"]
+    option.innerHTML = catch_up_elem["date"] + " (" + catch_up_elem["value"] + ")"
+    if ( exercises[ex_id] && exercises[ex_id]["catch_up"] == catch_up_elem["date"]){
+      option.selected = true
+      select.hidden = false
     }
-    var label = document.createElement("label")
-    label.setAttribute("for", ex_id + "_counts_05")
-    label.innerHTML = "1/2"
-    elem.appendChild(radio)
-    elem.appendChild(label)
+    select.appendChild(option)
+  }
+  elem.appendChild(select)
 
-    var radio = document.createElement("input")
-    radio.type = "radio"
-    radio.id = ex_id + "_counts_1"
-    radio.name = ex_id + "_counts"
-    radio.value = "1"
-    if ( exercises[ex_id] && exercises[ex_id]["counts"] == "1"){
-      radio.checked = true
-    }
-    var label = document.createElement("label")
-    label.setAttribute("for", ex_id + "_counts_1")
-    label.innerHTML = "1"
-    elem.appendChild(radio)
-    elem.appendChild(label)
-    
-    var input = document.createElement("input")
-    input.name = ex_id + "_catch_up"
-    input.setAttribute("list", ex_id + "_catch_up")
-    input.placeholder = "Catch up"
-    elem.appendChild(input)
-    if ( exercises[ex_id] && exercises[ex_id]["catch_up"]){
-      input.value = exercises[ex_id]["catch_up"]
-    }
+  input = document.createElement("input")
+  input.name = ex_id + "_order"
+  input.id = ex_id + "_order"
+  input.type = "text"
+  input.hidden = true
+  elem.appendChild(input)
 
-    var datalist = document.createElement("datalist")
-    datalist.id = ex_id + "_catch_up"
-    for(var catch_up_elem of catch_up) {
-      var option = document.createElement('option')
-      option.value = catch_up_elem["date"] + " (" + catch_up_elem["value"] + ")"
-      datalist.appendChild(option)
-    }
-    elem.appendChild(datalist)
+  var button = document.createElement("button")
+  button.type = "button"
+  button.innerHTML = "-"
+  button.addEventListener("click", function(){ document.getElementById(ex_id).remove(); order_exercises() })
+  elem.appendChild(button)
 
-    input = document.createElement("input")
-    input.name = ex_id + "_order"
-    input.id = ex_id + "_order"
-    input.type = "text"
-    input.setAttribute("hidden", true)
-    elem.appendChild(input)
+  document.getElementById("exercises").appendChild(elem)
 
-    var button = document.createElement("button")
-    button.type = "button"
-    button.innerHTML = "-"
-    button.addEventListener("click", function(){ document.getElementById(ex_id).remove(); order_exercises() })
-    elem.appendChild(button)
+  order_exercises()
+}
 
-    document.getElementById("exercises").appendChild(elem)
-
-    order_exercises()
+function load_data() {
+  if (attributes["recap"]){
+    document.getElementById("recap").innerHTML = attributes["recap"]
+  }
+  if (attributes["weight"]){
+    document.getElementById("weight").value = attributes["weight"]
+  }
+  if (attributes["bodyfat"]){
+    document.getElementById("bodyfat").value = attributes["bodyfat"]
+  }
+  if (attributes["happiness"]){
+    document.getElementById("happiness_" + attributes["happiness"]).checked = true
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    if (attributes["recap"]){
-      document.getElementById("recap").innerHTML = attributes["recap"]
-    }
-    if (attributes["weight"]){
-      document.getElementById("weight").value = attributes["weight"]
-    }
-    if (attributes["bodyfat"]){
-      document.getElementById("bodyfat").value = attributes["bodyfat"]
-    }
-    if (attributes["happiness"]){
-      document.getElementById("happiness_" + attributes["happiness"]).checked = true
-    }
+  for(var ex_id of exercise_order) {
+    add_exercise(ex_id)
+    add_exercise_fields(ex_id)
+  }
+}
 
-    for(var ex_id of exercise_order) {
-      add_exercise(ex_id)
-      add_exercise_fields(ex_id)
-    }
-  })
+document.addEventListener('DOMContentLoaded', load_data)
 
 </script>
 <div id="page">

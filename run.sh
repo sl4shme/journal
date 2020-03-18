@@ -27,7 +27,7 @@ function watch_file() {
 
 watch_file ./app/templates/form.html $$ SIGINT &
 watch_file ./app/routes.py $$ SIGINT &
-watch_file ./journal.py $$ SIGINT &
+watch_file ./day.py $$ SIGINT &
 
 watch_file ./flask.log $$ USR1 &
 

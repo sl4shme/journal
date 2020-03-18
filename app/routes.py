@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template
-from journal import Day
+from day import Day
 from datetime import datetime, timedelta
 from flask import request
 
