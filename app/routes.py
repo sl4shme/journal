@@ -25,15 +25,17 @@ def journal():
         for key in list(f.keys()):
             day.attributes[key] = f.pop(key)
 
-        day.exercise_order = sorted(list(day.exercises.keys()),
-                                    key=lambda k: day.exercises[k]["order"])
-
-        day.save()
+        day.exercises_order = sorted(list(day.exercises.keys()),
+                                     key=lambda k: int(day.exercises[k]["order"]))
 
         msg = " {} / {} / {} / {}".format(str(day),
                                           str(day.attributes),
                                           str(day.exercises),
-                                          str(day.exercise_order))
+                                          str(day.exercises_order))
+
+        day.save()
+
+        day = Day(day.date)
 
         return render_template('form.html', day=day, msg=msg)
 

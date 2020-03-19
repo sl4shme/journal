@@ -1,19 +1,13 @@
 <html><body>
 <script>
-var catch_up = [{"date": "2020_01_10", "value": 1},
-                {"date": "2020_02_10", "value": 1},
-                {"date": "2020_03_10", "value": 0.5}]
-
-//var catch_up = []
-
 var exercise_model = {"Bike": ["km", "time"],
                       "Run": ["km", "time"],
                       "Climb": ["count", "time"]}
 
 var attributes = {{ day.attributes | tojson }}
 var exercises = {{ day.exercises | tojson }}
-var exercise_order = {{ day.exercise_order | tojson }}
-//var catch_up = {{ day.potential_catch_up | tojson }}
+var exercises_order = {{ day.exercises_order | tojson }}
+var catch_up = {{ day.potential_catch_up | tojson }}
 
 function order_exercises(){
   if (document.getElementById("exercises").childElementCount !== 0){
@@ -156,9 +150,9 @@ function add_exercise(ex_id = null) {
   select.appendChild(option)
   for(var catch_up_elem of catch_up) {
     var option = document.createElement('option')
-    option.value = catch_up_elem["date"]
-    option.innerHTML = catch_up_elem["date"] + " (" + catch_up_elem["value"] + ")"
-    if ( exercises[ex_id] && exercises[ex_id]["catch_up"] == catch_up_elem["date"]){
+    option.value = catch_up_elem
+    option.innerHTML = catch_up_elem
+    if ( exercises[ex_id] && exercises[ex_id]["catch_up"] == catch_up_elem){
       option.selected = true
       select.hidden = false
     }
@@ -198,7 +192,7 @@ function load_data() {
     document.getElementById("happiness_" + attributes["happiness"]).checked = true
   }
 
-  for(var ex_id of exercise_order) {
+  for(var ex_id of exercises_order) {
     add_exercise(ex_id)
     add_exercise_fields(ex_id)
   }
@@ -238,7 +232,7 @@ document.addEventListener('DOMContentLoaded', load_data)
       <label for="happiness_5">5</label>
     </p>
 
-    <p>Exercises:
+    <p>Exercises:{% if day.caught_up != "" %} Caught up on {{ day.caught_up }}{% endif %}
       <div id="exercises"></div>
       <button type="button" onclick="add_exercise()">+</button>
     </p>
