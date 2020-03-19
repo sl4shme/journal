@@ -1,5 +1,10 @@
-Use JS to make date picker nicer
-Add a <hr> line between exercises
-Add monitor of change + save indicator 
-Change to DD_MM_YYYY
-Make caught up on a link
+Cosmetic:
+    Use JS to make date picker nicer
+    Add a <hr> line between exercises
+    Align textarea
+
+Functional:
+    Save indicator
+    Display if total == 1
+    Change to DD_MM_YYYY
+    Make caught up on a link
