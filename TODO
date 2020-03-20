@@ -1,10 +1,26 @@
-Cosmetic:
-    Use JS to make date picker nicer
-    Add a <hr> line between exercises
-    Align textarea
-
 Functional:
     Save indicator
     Display if total == 1
     Change to DD_MM_YYYY
     Make caught up on a link
+    Find a smart way of tagging in the recap
+    Security
+    Host
+
+Cosmetic:
+    Use JS to make date picker nicer
+    Add a <hr> line between exercises
+    Align textarea
+
+Fill:
+    Build model
+    Fill test month
+
+Side pages:
+    Sport timer
+    Goals
+    To Read
+    Search
+    Year recap
+    Sport goals live
+    Personnal heatmap
